@@ -201,9 +201,32 @@ namespace ds::utils
     template<class Structure>
     void ComplexityAnalyzer<Structure>::runReplications(Structure structurePrototype)
     {
-        // TODO 01
-        // po implementacii vymazte vyhodenie vynimky!
-        throw std::runtime_error("Not implemented yet");
+        std::vector<size_t> sizes;
+        for (int i = 0; i < this->getStepCount(); i++) {
+            size_t size = (i + 1) * this->getStepSize();
+            sizes.push_back(size);
+        }
+        std::vector<std::vector<duration_t>> results;
+        for (int i = 0; i < this->getReplicationCount(); i++) {
+            Structure structure;
+            std::vector<duration_t> durations;
+            for (size_t size : sizes) {
+                this->growToSize(structure, size);
+
+                beforeOperation_(structure)
+                auto before = std::chrono::high_resolution_clock::now();
+                this->executeOperation(structure);
+                auto after = std::chrono::high_resolution_clock::now();
+                afterOperation_(structure)
+
+                auto duration = std::chrono::duration_cast<duration_t>(after - before);
+
+                durations.push_back(duration);
+            }
+            results.push_back(durations);
+        }
+        
+        this->saveToCsvFile(sizes, results);
     }
 
     template <class Structure>

@@ -7,6 +7,49 @@
 
 namespace ds::utils
 {
+    class VectorInsertAnalyzer : public ComplexityAnalyzer<std::vector<int>> {
+        private:
+            size_t index_;
+
+        public:
+            VectorInsertAnalyzer() :
+                ComplexityAnalyzer("VectorInsertAnalyzer")
+            {
+                this->registerBeforeOperation([&](std::vector<int>& structure){
+                        index_ = rand() % structure.size();
+                    });
+            }
+            void growToSize(std::vector<int>& structure, size_t size) override {
+            
+                while (structure.size() < size) {
+                    structure.push_back(69);
+                }
+
+            }
+            void executeOperation(std::vector<int>& structure) override {
+                structure.insert(structure.begin() + index_, 69);
+            }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * @brief Common base for list analyzers.
      */
