@@ -127,7 +127,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Semestralka.cpp" />
+    <ClCompile Include="csv_parser.cpp" />
+    <ClCompile Include="ip_tools.cpp" />
+    <ClCompile Include="routing_record.cpp" />
+    <ClCompile Include="semestralka_main.cpp" />
+    <ClCompile Include="time_tools.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="csv_parser.h" />
+    <ClInclude Include="filter_tools.h" />
+    <ClInclude Include="ip_tools.h" />
+    <ClInclude Include="routing_record.h" />
+    <ClInclude Include="time_tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
