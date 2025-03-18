@@ -17,7 +17,7 @@ public:
 	string getLifeTime();
 	string getPrefixAdd();
 	string getPreffixMask();
-	string getNextHopAdd() const;
+	string getNextHopAdd();
 	void print();
 };
 

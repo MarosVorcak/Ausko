@@ -5,24 +5,22 @@ void stripWord(std::string& str, const std::string& word) {
 	if (pos != std::string::npos) {
 		str.erase(pos, word.length());
 	}
+
+	str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
 }
 
-vector<RoutingRecord> parseCSV(const string& filename)
-{
+vector<RoutingRecord> parseCSV(const string& filename) {
 	vector<RoutingRecord> records;
 	ifstream file(filename);
-	if (!file.is_open())
-	{
+	if (!file.is_open()) {
 		cout << "Error opening file" << endl;
 		return records;
 	}
 
 	string line;
 	bool firstLine = true;
-	while (getline(file, line))
-	{
-		if (firstLine)
-		{
+	while (getline(file, line)) {
+		if (firstLine) {
 			firstLine = false;
 			continue;
 		}
@@ -30,16 +28,14 @@ vector<RoutingRecord> parseCSV(const string& filename)
 		stringstream ss(line);
 		string cell;
 		int collumIndex = 0;
-		
+
 		string lifeTime;
 		string prefixAdd;
 		string prefixMask;
 		string nextHopAdd;
 
-		while (getline(ss, cell, ';'))
-		{
-			switch (collumIndex)
-			{
+		while (getline(ss, cell, ';')) {
+			switch (collumIndex) {
 			case 0:
 				break;
 			case 1:

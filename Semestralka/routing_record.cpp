@@ -1,17 +1,15 @@
 #include "routing_record.h"
 
 
-RoutingRecord::RoutingRecord()
-{
-	this->lifeTime = "penis";
-	this->prefixAdd = "penis2";
-	this->preffixMask = "peni5";
-	this->nextHopAdd = "penis4";
+RoutingRecord::RoutingRecord() {
+	this->lifeTime = "";
+	this->prefixAdd = "";
+	this->preffixMask = "";
+	this->nextHopAdd = "";
 
 }
 
-RoutingRecord::RoutingRecord(string lifeTime, string prefixAdd, string preffixMask, string nextHopAdd)
-{
+RoutingRecord::RoutingRecord(string lifeTime, string prefixAdd, string preffixMask, string nextHopAdd) {
 	this->lifeTime = lifeTime;
 	this->prefixAdd = prefixAdd;
 	this->preffixMask = preffixMask;
@@ -19,27 +17,22 @@ RoutingRecord::RoutingRecord(string lifeTime, string prefixAdd, string preffixMa
 
 }
 
-string RoutingRecord::getLifeTime()
-{
+string RoutingRecord::getLifeTime() {
 	return this->lifeTime;
 }
 
-string RoutingRecord::getPrefixAdd()
-{
+string RoutingRecord::getPrefixAdd() {
 	return this->prefixAdd;
 }
 
-string RoutingRecord::getPreffixMask()
-{
+string RoutingRecord::getPreffixMask() {
 	return this->preffixMask;
 }
 
-string RoutingRecord::getNextHopAdd() const
-{
+string RoutingRecord::getNextHopAdd() {
 	return this->nextHopAdd;
 }
 
-void RoutingRecord::print()
-{
-	cout << this->getLifeTime() <<  " " << this->getPrefixAdd() << " " << this->getPreffixMask() << " " << this->getNextHopAdd() << endl;
+void RoutingRecord::print() {
+	cout << this->getLifeTime() << " " << this->getPrefixAdd() << " " << this->getPreffixMask() << " " << this->getNextHopAdd() << endl;
 }

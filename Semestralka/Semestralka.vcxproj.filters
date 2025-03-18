@@ -27,9 +27,6 @@
     <ClCompile Include="time_tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ip_tools.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="routing_record.h">

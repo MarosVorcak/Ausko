@@ -128,7 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="csv_parser.cpp" />
-    <ClCompile Include="ip_tools.cpp" />
     <ClCompile Include="routing_record.cpp" />
     <ClCompile Include="semestralka_main.cpp" />
     <ClCompile Include="time_tools.cpp" />
