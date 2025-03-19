@@ -28,11 +28,6 @@ void printFiltered(vector<RoutingRecord>& filteredVector) {
 	else {
 		cout << "Skipping print.\n";
 	}
-	cout << "Do you want to clear the filtered data structure or continue to filter it further? (y/n): ";
-	cin >> confirmation;
-	if (confirmation == "y" || confirmation == "Y") {
-		filteredVector.clear();
-	}
 }
 
 int main() {
@@ -42,16 +37,16 @@ int main() {
 		showMenu();
 		cin >> choice;
 
-		if (std::cin.fail()) {
-			std::cin.clear(); 
-			std::cin.ignore(10000, '\n'); 
-			std::cout << "Invalid input. Please enter a number." << endl;
+		if (cin.fail()) {
+			cin.clear(); 
+			cin.ignore(10000, '\n'); 
+			cout << "Invalid input. Please enter a number." << endl;
 			continue;
 		}
 
 		string minimum;
 		string maximum;
-		string nextHopAdd;
+		string inputAdd;
 		string exitChoice;
 		vector<RoutingRecord> filtered;
 
@@ -65,13 +60,16 @@ int main() {
 			printFiltered(filtered);
 			break;
 		case 2:
-			cout << "Enter a nexthop address (192.168.1.10): ";
-			cin >> nextHopAdd;
-			filtered = filter(records.begin(), records.end(), [&](RoutingRecord& record) {return record.getNextHopAdd() == nextHopAdd;});
+			cout << "Enter a nexthop address (example >> 192.168.1.10): ";
+			cin >> inputAdd;
+			filtered = filter(records.begin(), records.end(), [&](RoutingRecord& record) {return record.getNextHopAdd() == inputAdd;});
 			printFiltered(filtered);
-
 			break;
 		case 3:
+			cout << "Enter address you want to match (example >> 192.168.1.10): ";
+			cin >> inputAdd;
+			filtered = filter(records.begin(), records.end(), [&](RoutingRecord& record) {return doesIPMatch(record.getPrefixAdd(), 8, inputAdd); });
+			printFiltered(filtered);
 			break;
 		case 4:
 			cout << "Printing filtered data structure: " << endl;

@@ -38,11 +38,10 @@ vector<int> decToBinIP(const string& ip) {
 //}
 
 
-bool doesIPMatch(const string& prefixAdd, string prefixMask, const string& comparedAdd) {
+bool doesIPMatch(const string& prefixAdd, int prefixMask, const string& comparedAdd) {
 	auto prefixAddBin = decToBinIP(prefixAdd);
 	auto comparedAddBin = decToBinIP(comparedAdd);
-	int prefixMaskInt = stoi(prefixMask);
-	for (int i = 0; i < prefixMaskInt; i++) {
+	for (int i = 0; i < prefixMask; i++) {
 		if (prefixAddBin[i] != comparedAddBin[i]) {
 			return false;
 		}
