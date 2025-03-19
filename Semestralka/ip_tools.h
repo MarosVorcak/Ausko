@@ -13,7 +13,7 @@ vector<int> decToBinIP(const string& ip) {
 	string octet;
 	while (getline(ss, octet, '.')) {
 		bitset<8> octetBin(stoi(octet));
-		for (size_t i = 0; i < octetBin.size(); i++) {
+		for (int i = 7; i >= 0; i--) { 
 			result.push_back(octetBin[i] ? 1 : 0);
 		}
 	}
@@ -38,11 +38,12 @@ vector<int> decToBinIP(const string& ip) {
 //}
 
 
-bool doesIPMatch(const string& prefixAdd, int prefixMask, const string& comparedAdd) {
+bool doesIPMatch(const string& prefixAdd, string prefixMask, const string& comparedAdd) {
 	auto prefixAddBin = decToBinIP(prefixAdd);
 	auto comparedAddBin = decToBinIP(comparedAdd);
-	for (int i = 0; i < prefixMask; i++) {
-		if (prefixAddBin[i] != comparedAdd[i]) {
+	int prefixMaskInt = stoi(prefixMask);
+	for (int i = 0; i < prefixMaskInt; i++) {
+		if (prefixAddBin[i] != comparedAddBin[i]) {
 			return false;
 		}
 	}
