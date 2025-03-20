@@ -20,24 +20,6 @@ vector<int> decToBinIP(const string& ip) {
 	return result;
 }
 
-//string decToBinIP(const string& ip) {
-//	string result;
-//	stringstream ss(ip);
-//	string octet;
-//	int count = 0;
-//	while (getline(ss, octet, '.')) {
-//		bitset<8> octetBin(stoi(octet));
-//		result += octetBin.to_string();
-//
-//		if (count < 3) {
-//			result += ".";
-//		}
-//		count++;
-//	}
-//	return result;
-//}
-
-
 bool doesIPMatch(const string& prefixAdd, int prefixMask, const string& comparedAdd) {
 	auto prefixAddBin = decToBinIP(prefixAdd);
 	auto comparedAddBin = decToBinIP(comparedAdd);

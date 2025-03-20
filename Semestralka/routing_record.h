@@ -4,18 +4,17 @@
 using namespace std;
 class RoutingRecord
 {
-
 private:
 	string lifeTime;
 	string prefixAdd;
-	string preffixMask;
+	int preffixMask;
 	string nextHopAdd;
 public:
 	RoutingRecord();
-	RoutingRecord(string lifeTime, string prefixAdd, string preffixMask, string nextHopAdd);
+	RoutingRecord(string lifeTime, string prefixAdd, int preffixMask, string nextHopAdd);
 	string getLifeTime();
 	string getPrefixAdd();
-	string getPreffixMask();
+	int getPreffixMask();
 	string getNextHopAdd();
 	void print();
 };

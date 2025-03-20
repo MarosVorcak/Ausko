@@ -4,12 +4,12 @@
 RoutingRecord::RoutingRecord() {
 	this->lifeTime = "";
 	this->prefixAdd = "";
-	this->preffixMask = "";
+	this->preffixMask = 0;
 	this->nextHopAdd = "";
 
 }
 
-RoutingRecord::RoutingRecord(string lifeTime, string prefixAdd, string preffixMask, string nextHopAdd) {
+RoutingRecord::RoutingRecord(string lifeTime, string prefixAdd, int preffixMask, string nextHopAdd) {
 	this->lifeTime = lifeTime;
 	this->prefixAdd = prefixAdd;
 	this->preffixMask = preffixMask;
@@ -25,7 +25,7 @@ string RoutingRecord::getPrefixAdd() {
 	return this->prefixAdd;
 }
 
-string RoutingRecord::getPreffixMask() {
+int RoutingRecord::getPreffixMask() {
 	return this->preffixMask;
 }
 

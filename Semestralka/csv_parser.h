@@ -41,7 +41,7 @@ vector<RoutingRecord> parseCSV(const string& filename) {
 
 		string lifeTime;
 		string prefixAdd;
-		string prefixMask;
+		int prefixMask = 0;
 		string nextHopAdd;
 
 		while (getline(ss, cell, ';')) {
@@ -55,7 +55,12 @@ vector<RoutingRecord> parseCSV(const string& filename) {
 				prefixAdd = cell;
 				break;
 			case 3:
-				prefixMask = cell;
+				if (!cell.empty()) {
+					prefixMask = stoi(cell);
+				}
+				else {		
+					cout << "Warning: Empty prefix mask in CSV file" << endl;
+				}
 				break;
 			case 4:
 				break;
