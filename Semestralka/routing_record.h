@@ -7,14 +7,15 @@ class RoutingRecord
 private:
 	string lifeTime;
 	string prefixAdd;
-	int preffixMask;
+	int prefixMask;
 	string nextHopAdd;
+	
 public:
 	RoutingRecord();
 	RoutingRecord(string lifeTime, string prefixAdd, int preffixMask, string nextHopAdd);
 	string getLifeTime();
 	string getPrefixAdd();
-	int getPreffixMask();
+	int getPrefixMask();
 	string getNextHopAdd();
 	void print();
 };

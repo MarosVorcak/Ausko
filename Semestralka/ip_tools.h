@@ -1,6 +1,3 @@
-#ifndef IP_TOOLS_H
-#define IP_TOOLS_H
-
 #include <string>
 #include <sstream>
 #include <bitset>
@@ -30,4 +27,3 @@ bool doesIPMatch(const string& prefixAdd, int prefixMask, const string& compared
 	}
 	return true;
 }
-#endif 

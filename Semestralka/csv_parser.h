@@ -1,7 +1,3 @@
-#ifndef CSV_PARSER_H
-#define CSV_PARSER_H
-
-
 #include "routing_record.h"
 #include <vector>
 #include <fstream>
@@ -73,8 +69,7 @@ vector<RoutingRecord> parseCSV(const string& filename) {
 			}
 			collumIndex++;
 		}
-		RoutingRecord record(lifeTime, prefixAdd, prefixMask, nextHopAdd);
-		records.push_back(record);
+		records.emplace_back(lifeTime, prefixAdd, prefixMask, nextHopAdd);
 	}
 	return records;
 }
@@ -82,4 +77,3 @@ vector<RoutingRecord> parseCSV(const string& filename) {
 
 
 
-#endif

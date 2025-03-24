@@ -1,6 +1,3 @@
-#ifndef TIME_TOOLS_H
-#define TIME_TOOLS_H
-
 #include <string>
 #include <sstream>
 
@@ -40,4 +37,3 @@ bool isTimeInRange(const string& timeStr, const string& startTime, const string&
 }
 
 
-#endif 

@@ -4,7 +4,7 @@
 RoutingRecord::RoutingRecord() {
 	this->lifeTime = "";
 	this->prefixAdd = "";
-	this->preffixMask = 0;
+	this->prefixMask = 0;
 	this->nextHopAdd = "";
 
 }
@@ -12,7 +12,7 @@ RoutingRecord::RoutingRecord() {
 RoutingRecord::RoutingRecord(string lifeTime, string prefixAdd, int preffixMask, string nextHopAdd) {
 	this->lifeTime = lifeTime;
 	this->prefixAdd = prefixAdd;
-	this->preffixMask = preffixMask;
+	this->prefixMask = preffixMask;
 	this->nextHopAdd = nextHopAdd;
 
 }
@@ -25,8 +25,8 @@ string RoutingRecord::getPrefixAdd() {
 	return this->prefixAdd;
 }
 
-int RoutingRecord::getPreffixMask() {
-	return this->preffixMask;
+int RoutingRecord::getPrefixMask() {
+	return this->prefixMask;
 }
 
 string RoutingRecord::getNextHopAdd() {
@@ -34,5 +34,9 @@ string RoutingRecord::getNextHopAdd() {
 }
 
 void RoutingRecord::print() {
-	cout << this->getLifeTime() << " " << this->getPrefixAdd() << " " << this->getPreffixMask() << " " << this->getNextHopAdd() << endl;
+	std::cout << "Lifetime: " << getLifeTime()
+		<< " Prefix Address: " << getPrefixAdd()
+		<< " Prefix Mask: " << getPrefixMask()
+		<< " Next-hop Address: " << getNextHopAdd()
+		<< '\n';  
 }
