@@ -5,13 +5,13 @@
 #include "time_tools.h"
 
 void showMenu() {
-    cout << "======Menu======" << endl;
-    cout << "1. Filter by lifetime" << endl;
-    cout << "2. Filter by nexthop address" << endl;
-    cout << "3. Filter by matching with prefix address" << endl;
-    cout << "4. Print filtered data structure" << endl;
-    cout << "5. Reset all filters" << endl;
-    cout << "6. Exit the program" << endl;
+    cout << "======Menu======" << '\n';
+    cout << "1. Filter by lifetime" << '\n';
+    cout << "2. Filter by nexthop address" << '\n';
+    cout << "3. Filter by matching with prefix address" << '\n';
+    cout << "4. Print filtered data structure" << '\n';
+    cout << "5. Reset all filters" << '\n';
+    cout << "6. Exit the program" << '\n';
     cout << "Enter your choice: ";
 }
 
@@ -27,6 +27,7 @@ int main() {
     vector<RoutingRecord> filtered;
     int choice;
     string minimum, maximum, inputAdd, confirmation;
+    int inputMask;
 
     while (true) {
         showMenu();
@@ -35,7 +36,7 @@ int main() {
         if (cin.fail()) {
             cin.clear(); 
             cin.ignore(10000, '\n'); 
-            cout << "Invalid input. Please enter a number." << endl;
+            cout << "Invalid input. Please enter a number." << '\n';
             continue;
         }
 
@@ -67,22 +68,24 @@ int main() {
         case 3: 
             cout << "Enter address you want to match (example >> 192.168.1.10): ";
             cin >> inputAdd;
+            cout << "Enter max prefix you want to match (1-31): ";
+            cin >> inputMask;
             filtered = Filter::filter(workingSet.begin(), workingSet.end(), 
                 [&](RoutingRecord& record) {
-                    return doesIPMatch(record.getPrefixAdd(), 8, inputAdd);
+                    return doesIPMatch(record.getPrefixAdd(), inputMask, inputAdd);
                 });
             workingSet = filtered;
             printFiltered(workingSet);
             break;
 
         case 4: 
-            cout << "Current filtered results (" << workingSet.size() << " records):" << endl;
+            cout << "Current filtered results (" << workingSet.size() << " records):" << '\n';
             printFiltered(workingSet);
             break;
 
         case 5:
             workingSet = records;
-            cout << "All filters reset. Working with full dataset (" << workingSet.size() << " records)." << endl;
+            cout << "All filters reset. Working with full dataset (" << workingSet.size() << " records)." << '\n';
             break;
 
         case 6: 
@@ -99,7 +102,7 @@ int main() {
         }
 
         if (choice >= 1 && choice <= 3) {
-            cout << "Filter applied. Current results: " << workingSet.size() << " records." << endl;
+            cout << "Filter applied. Current results: " << workingSet.size() << " records." << '\n';
             cout << "Continue filtering? (y/n): ";
             cin >> confirmation;
             if (confirmation != "y" && confirmation != "Y") {
