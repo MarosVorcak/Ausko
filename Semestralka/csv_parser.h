@@ -4,8 +4,6 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace std;
-
 void stripWord(std::string& str, const std::string& word) {
 	size_t pos = str.find(word);
 	if (pos != std::string::npos) {
@@ -15,32 +13,33 @@ void stripWord(std::string& str, const std::string& word) {
 	str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
 }
 
-vector<RoutingRecord> parseCSV(const string& filename) {
-	vector<RoutingRecord> records;
-	ifstream file(filename);
+std::vector<RoutingRecord> parseCSV(const std::string& filename) {
+	std::vector<RoutingRecord> records;
+	records.reserve(10000);
+	std::ifstream file(filename);
 	if (!file.is_open()) {
-		cout << "Error opening file" << endl;
+		std::cout << "Error opening file" << std::endl;
 		return records;
 	}
 
-	string line;
+	std::string line;
 	bool firstLine = true;
-	while (getline(file, line)) {
+	while (std::getline(file, line)) {
 		if (firstLine) {
 			firstLine = false;
 			continue;
 		}
 
-		stringstream ss(line);
-		string cell;
+		std::stringstream ss(line);
+		std::string cell;
 		int collumIndex = 0;
 
-		string lifeTime;
-		string prefixAdd;
+		std::string lifeTime;
+		std::string prefixAdd;
 		int prefixMask = 0;
-		string nextHopAdd;
+		std::string nextHopAdd;
 
-		while (getline(ss, cell, ';')) {
+		while (std::getline(ss, cell, ';')) {
 			switch (collumIndex) {
 			case 0:
 				break;
@@ -52,10 +51,10 @@ vector<RoutingRecord> parseCSV(const string& filename) {
 				break;
 			case 3:
 				if (!cell.empty()) {
-					prefixMask = stoi(cell);
+					prefixMask = std::stoi(cell);
 				}
 				else {		
-					cout << "Warning: Empty prefix mask in CSV file" << endl;
+					std::cout << "Warning: Empty prefix mask in CSV file" << std::endl;
 				}
 				break;
 			case 4:
@@ -73,7 +72,3 @@ vector<RoutingRecord> parseCSV(const string& filename) {
 	}
 	return records;
 }
-
-
-
-

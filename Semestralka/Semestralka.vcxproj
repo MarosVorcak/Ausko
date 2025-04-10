@@ -127,7 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="routing_record.cpp" />
     <ClCompile Include="semestralka_main.cpp" />
   </ItemGroup>
   <ItemGroup>

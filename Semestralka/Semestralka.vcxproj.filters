@@ -18,24 +18,21 @@
     <ClCompile Include="semestralka_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="routing_record.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="routing_record.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="time_tools.h">
+    <ClInclude Include="csv_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="csv_parser.h">
+    <ClInclude Include="filter_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ip_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="filter_tools.h">
+    <ClInclude Include="time_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

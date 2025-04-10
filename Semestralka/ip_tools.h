@@ -1,29 +1,33 @@
+#include <cstdint>
 #include <string>
 #include <sstream>
-#include <bitset>
-#include <vector>
-using namespace std;
+#include <stdexcept>
 
-vector<int> decToBinIP(const string& ip) {
-	vector<int> result;
-	stringstream ss(ip);
-	string octet;
-	while (getline(ss, octet, '.')) {
-		bitset<8> octetBin(stoi(octet));
-		for (int i = 7; i >= 0; i--) { 
-			result.push_back(octetBin[i] ? 1 : 0);
-		}
-	}
-	return result;
+uint32_t ipToUint32(const std::string& ip) {
+    uint32_t result = 0;
+    std::istringstream iss(ip);
+    std::string octet;
+
+    for (int i = 0; i < 4; ++i) {
+        if (!std::getline(iss, octet, '.')) {
+            throw std::invalid_argument("Invalid IP address format");
+        }
+        int value = std::stoi(octet);
+        if (value < 0 || value > 255) {
+            throw std::out_of_range("Octet value out of range");
+        }
+        result = (result << 8) | value;
+    }
+
+    return result;
 }
 
-bool doesIPMatch(const string& prefixAdd, int prefixMask, const string& comparedAdd) {
-	auto prefixAddBin = decToBinIP(prefixAdd);
-	auto comparedAddBin = decToBinIP(comparedAdd);
-	for (int i = 0; i < prefixMask; i++) {
-		if (prefixAddBin[i] != comparedAddBin[i]) {
-			return false;
-		}
-	}
-	return true;
+// Compare IPs using prefix mask
+bool doesIPMatch(uint32_t prefixIp, int prefixMask, uint32_t comparedIp) {
+    if (prefixMask == 0) return true; // 0.0.0.0/0 matches all
+    if (prefixMask > 32) prefixMask = 32;
+
+    uint32_t mask = (prefixMask == 32) ? 0xFFFFFFFF : ~(0xFFFFFFFF >> prefixMask);
+    return (prefixIp & mask) == (comparedIp & mask);
 }
+
