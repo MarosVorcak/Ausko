@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 #include <cstdint> 
-#include "time_tools.h"
+#include "ip_tools.h" 
 
 class RoutingRecord {
 private:
@@ -24,7 +24,7 @@ public:
     RoutingRecord(std::string& lifeTime, std::string& prefixAdd, int prefixMask, std::string& nextHopAdd) {
         this->lifeTime = lifeTime;
         this->prefixAdd = prefixAdd;
-        this->prefixAddBits = ipToUint32(prefixAdd);
+		this->prefixAddBits = ipToUint32(prefixAdd);
         this->prefixMask = prefixMask;
         this->nextHopAdd = nextHopAdd;
     }

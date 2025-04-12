@@ -22,9 +22,8 @@ uint32_t ipToUint32(const std::string& ip) {
     return result;
 }
 
-// Compare IPs using prefix mask
 bool doesIPMatch(uint32_t prefixIp, int prefixMask, uint32_t comparedIp) {
-    if (prefixMask == 0) return true; // 0.0.0.0/0 matches all
+    if (prefixMask == 0) return true;
     if (prefixMask > 32) prefixMask = 32;
 
     uint32_t mask = (prefixMask == 32) ? 0xFFFFFFFF : ~(0xFFFFFFFF >> prefixMask);
