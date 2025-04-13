@@ -22,7 +22,7 @@ void printFiltered(std::vector<RoutingRecord>& filteredVector) {
 
 int main() {
     std::vector<RoutingRecord> records = parseCSV("RT.csv");
-    std::vector<RoutingRecord> workingSet = records;
+	std::vector<RoutingRecord> workingSet = records;
     std::vector<RoutingRecord> filtered;
     int choice;
     std::string minimum, maximum, inputAdd, confirmation;
