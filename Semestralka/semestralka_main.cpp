@@ -8,7 +8,22 @@ void showMenu() {
     std::cout << "2. Filter by nexthop address" << '\n';
     std::cout << "3. Filter by matching with prefix address" << '\n';
     std::cout << "4. Print filtered data structure" << '\n';
-    std::cout << "5. Exit the program" << '\n';
+    std::cout << "5. Exit the part" << '\n';
+    std::cout << "Enter your choice: ";
+}
+
+void showParts() {
+    std::cout << "======Parts======" << "\n";
+    std::cout << "1. Part1 (simple vector)" << '\n';
+    std::cout << "2. Part2 (explicit hierarchy)" << '\n';
+    std::cout << "Enter your choice: ";
+}
+
+void showMovementOptions() {
+    std::cout << "Chose where to move" << "\n";
+    std::cout << "1. To parent" << "\n";
+    std::cout << "2. To son" << "\n";
+    std::cout << "3. Start filtering" << "\n";
     std::cout << "Enter your choice: ";
 }
 
@@ -19,14 +34,13 @@ void printFiltered(std::vector<RoutingRecord>& filteredVector) {
 }
 
 int main() {
+    initHeapMonitor();
     std::vector<RoutingRecord> records = parseCSV("RT.csv");
     RoutingTable rt(records);
     auto currentNode = RoutingTableIterator(&rt.getHierarchy(),rt.getHierarchy().accessRoot());
     auto end = RoutingTableIterator(&rt.getHierarchy(), nullptr);
-    currentNode.toSon(6);
-    currentNode.toSon(50);
     std::vector<RoutingRecord> filtered;
-    int choice, inputMask, octetValue;
+    int choice, inputMask, octetValue,part;
     std::string minimum, maximum, inputAdd, confirmation;
     auto matchWithLifetimeByReference = [&](RoutingRecord& record) {
         return isTimeInRange(record.getLifeTime(), minimum, maximum);
@@ -52,71 +66,174 @@ int main() {
     auto insertPointerToFiltered = [&](RoutingRecord* record) {
         filtered.push_back(*record);
         };
-    auto suckOutPointers = [&](RTNode& node) {
+    auto processRecordsWithLifetime = [&](RTNode& node) {
         Filter::filter(node.getPointers().begin(), node.getPointers().end(), matchWithLifetimeByPointer, insertPointerToFiltered);
         };
+    auto processRecordsWithNextHop = [&](RTNode& node) {
+        Filter::filter(node.getPointers().begin(), node.getPointers().end(), matchWithNextHopByPointer, insertPointerToFiltered);
+        };
+    auto processRecordsWithAddress = [&](RTNode& node) {
+        Filter::filter(node.getPointers().begin(), node.getPointers().end(), matchWithAdressByPointer, insertPointerToFiltered);
+        };
+
     auto isLeaf = [&](RTNode& node) {
         return node.getPointers().size() > 0;
         };
     while (true) {
-        showMenu();
-        std::cin >> choice;
-
-        if (std::cin.fail()) {
-            std::cin.clear(); 
-            std::cin.ignore(10000, '\n'); 
-            std::cout << "Invalid input. Please enter a number." << '\n';
-            continue;
-        }
-
-        switch (choice) {
+        bool stop = false;
+        showParts();
+        std::cin >> part;
+        switch (part) {
         case 1:
-            std::cout << "Enter minimum life time (example >> 1w4d3h or 6:25:20): ";
-            std::cin >> minimum;
-            std::cout << "Enter maximum life time (example >> 1w4d3h or 6:25:20): ";
-            std::cin >> maximum;
-            Filter::filter(records.begin(), records.end(), matchWithLifetimeByReference, insertToFiltered);
-            printFiltered(filtered);
-            break;
+            filtered.clear();
+            while (!stop) {
+                showMenu();
+                std::cin >> choice;
 
-        case 2: 
-            std::cout << "Enter a nexthop address (example >> 192.168.1.10): ";
-            std::cin >> inputAdd;
-            Filter::filter(records.begin(), records.end(), matchWithNextHopByReference, insertToFiltered);
-            printFiltered(filtered);
-            break;
+                if (std::cin.fail()) {
+                    std::cin.clear();
+                    std::cin.ignore(10000, '\n');
+                    std::cout << "Invalid input. Please enter a number." << '\n';
+                    continue;
+                }
 
-        case 3: 
-            std::cout << "Enter address you want to match (example >> 192.168.1.10): ";
-            std::cin >> inputAdd;
-            std::cout << "Enter max prefix you want to match (1-31): ";
-            std::cin >> inputMask;
-            Filter::filter(records.begin(), records.end(), matchWithAdressByReference, insertToFiltered);
-            printFiltered(filtered);
-            break;
+                switch (choice) {
+                case 1:
+                    std::cout << "Enter minimum life time (example >> 1w4d3h or 6:25:20): ";
+                    std::cin >> minimum;
+                    std::cout << "Enter maximum life time (example >> 1w4d3h or 6:25:20): ";
+                    std::cin >> maximum;
+                    Filter::filter(records.begin(), records.end(), matchWithLifetimeByReference, insertToFiltered);
+                    printFiltered(filtered);
+                    break;
 
-        case 4: 
-            std::cout << "Current filtered results (" << filtered.size() << " records):" << '\n';
-            printFiltered(filtered);
-            break;
+                case 2:
+                    std::cout << "Enter a nexthop address (example >> 192.168.1.10): ";
+                    std::cin >> inputAdd;
+                    Filter::filter(records.begin(), records.end(), matchWithNextHopByReference, insertToFiltered);
+                    printFiltered(filtered);
+                    break;
 
-        case 5: 
-            std::cout << "Are you sure you want to exit? (y/n): ";
-            std::cin >> confirmation;
-            if (confirmation == "y" || confirmation == "Y") {
-                std::cout << "Exiting...\n";
-                return 0;
+                case 3:
+                    std::cout << "Enter address you want to match (example >> 192.168.1.10): ";
+                    std::cin >> inputAdd;
+                    std::cout << "Enter max prefix you want to match (1-31): ";
+                    std::cin >> inputMask;
+                    Filter::filter(records.begin(), records.end(), matchWithAdressByReference, insertToFiltered);
+                    printFiltered(filtered);
+                    break;
+
+                case 4:
+                    std::cout << "Current filtered results (" << filtered.size() << " records):" << '\n';
+                    printFiltered(filtered);
+                    break;
+
+                case 5:
+                    std::cout << "Are you sure you want to exit? (y/n): ";
+                    std::cin >> confirmation;
+                    if (confirmation == "y" || confirmation == "Y") {
+                        stop = true;
+                        std::cout << "Exiting...\n";
+                    }
+                    break;
+
+                default:
+                    std::cout << "Invalid choice. Try again.\n";
+                }
+
+                if (choice >= 1 && choice <= 3) {
+                    std::cout << "Filter applied. Current results: " << filtered.size() << " records." << '\n';
+                    filtered.clear();
+                }
             }
             break;
+        case 2:
+            filtered.clear();
+            while (!stop) {
+                showMovementOptions();
+                std::cin >> choice;
+                switch (choice) {
+                case 1:
+                    currentNode.toParent();
+                    break;
+                case 2:
+                    std::cout << "Enter octet value: ";
+                    std::cin >> octetValue;
+                    currentNode.toSon(octetValue);
+                    break;
+                case 3:
+                    stop = true;
+                    break;
+                default:
+                    std::cout << "Invalid choice. Try again.\n";
+                }
+            }
+            stop = false;
+            while (!stop) {
+                showMenu();
+                std::cin >> choice;
 
+                if (std::cin.fail()) {
+                    std::cin.clear();
+                    std::cin.ignore(10000, '\n');
+                    std::cout << "Invalid input. Please enter a number." << '\n';
+                    continue;
+                }
+
+                switch (choice) {
+                case 1:
+                    std::cout << "Enter minimum life time (example >> 1w4d3h or 6:25:20): ";
+                    std::cin >> minimum;
+                    std::cout << "Enter maximum life time (example >> 1w4d3h or 6:25:20): ";
+                    std::cin >> maximum;
+                    Filter::filter(currentNode, end, isLeaf, processRecordsWithLifetime);
+                    printFiltered(filtered);
+                    break;
+
+                case 2:
+                    std::cout << "Enter a nexthop address (example >> 192.168.1.10): ";
+                    std::cin >> inputAdd;
+                    Filter::filter(currentNode, end, isLeaf, processRecordsWithNextHop);
+                    printFiltered(filtered);
+                    break;
+
+                case 3:
+                    std::cout << "Enter address you want to match (example >> 192.168.1.10): ";
+                    std::cin >> inputAdd;
+                    std::cout << "Enter max prefix you want to match (1-31): ";
+                    std::cin >> inputMask;
+                    Filter::filter(currentNode, end, isLeaf, processRecordsWithAddress);
+                    printFiltered(filtered);
+                    break;
+
+                case 4:
+                    std::cout << "Current filtered results (" << filtered.size() << " records):" << '\n';
+                    printFiltered(filtered);
+                    break;
+
+                case 5:
+                    std::cout << "Are you sure you want to exit? (y/n): ";
+                    std::cin >> confirmation;
+                    if (confirmation == "y" || confirmation == "Y") {
+                        stop = true;
+                        std::cout << "Exiting...\n";
+                    }
+                    break;
+
+                default:
+                    std::cout << "Invalid choice. Try again.\n";
+                }
+
+                if (choice >= 1 && choice <= 3) {
+                    std::cout << "Filter applied. Current results: " << filtered.size() << " records." << '\n';
+                    filtered.clear();
+                }
+            }
+            break;
         default:
             std::cout << "Invalid choice. Try again.\n";
         }
-
-        if (choice >= 1 && choice <= 3) {
-            std::cout << "Filter applied. Current results: " << filtered.size() << " records." << '\n';
-            filtered.clear();
-        }
     }
+    
 }
 
