@@ -1,3 +1,4 @@
+#pragma once
 #include "routing_record.h"
 #include <vector>
 #include <fstream>

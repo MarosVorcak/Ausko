@@ -76,4 +76,12 @@ public:
             << " Next-hop Address: " << getNextHopAdd()
             << '\n';
     }
+
+   void print() const {
+        std::cout << "Lifetime: " << getLifeTime()
+            << " Prefix Address: " << getPrefixAdd()
+            << " Prefix Mask: " << getPrefixMask()
+            << " Next-hop Address: " << getNextHopAdd()
+            << '\n';
+    }
 };
