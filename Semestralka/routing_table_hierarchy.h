@@ -8,15 +8,15 @@
 class RTNode {
 private:
     int octetValue;
-    std::vector<const RoutingRecord*> pointersToRecords;
+    std::vector<RoutingRecord*> pointersToRecords;
 public:
     RTNode();
     RTNode(int octetValue);
     void setOctetValue(int octetValue);
     int getOctetValue();
     void printRecords();
-    const std::vector<const RoutingRecord*>& getPointers();
-    void addPointer(const RoutingRecord* pointer);
+    std::vector< RoutingRecord*>& getPointers();
+    void addPointer(RoutingRecord* pointer);
     bool operator==(const RTNode& other) const;
     RTNode& operator=(const RTNode& other);
 };
@@ -82,7 +82,7 @@ void RTNode::setOctetValue(int octetValue) {
     this->octetValue = octetValue;
 }
 
-const std::vector<const RoutingRecord*>& RTNode::getPointers() {
+std::vector<RoutingRecord*>& RTNode::getPointers() {
     return this->pointersToRecords;
 }
 
@@ -99,7 +99,7 @@ int RTNode::getOctetValue() {
     return this->octetValue;
 }
 
-void RTNode::addPointer(const RoutingRecord* pointer) {
+void RTNode::addPointer(RoutingRecord* pointer) {
     this->pointersToRecords.push_back(pointer);
 }
 
@@ -161,7 +161,7 @@ void RoutingTable::addIP(const std::string& ip, const RoutingRecord* pointerToRe
             currentNode = &newNode;
         }
     }
-    currentNode->data_.addPointer(pointerToRecord);
+    currentNode->data_.addPointer(const_cast<RoutingRecord*>(pointerToRecord));
 }
 
 void RoutingTable::printSize() {

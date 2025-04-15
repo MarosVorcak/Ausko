@@ -4,14 +4,12 @@
 
 class Filter {
 public:
-    template<typename inputIterator, typename predicate>
-    static std::vector<RoutingRecord> filter(inputIterator begin, inputIterator end, predicate pred) {
-        std::vector<RoutingRecord> result;
+    template<typename inputIterator, typename predicate, typename operation>
+    static void filter(inputIterator begin, inputIterator end, predicate pred, operation oper) {
         for (inputIterator it = begin; it != end; ++it) {
             if (pred(*it)) {
-                result.push_back(*it);
+                oper(*it);
             }
         }
-        return result;
     }
 };

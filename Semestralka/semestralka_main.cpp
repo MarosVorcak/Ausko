@@ -23,23 +23,37 @@ int main() {
     RoutingTable rt(records);
     auto currentNode = RoutingTableIterator(&rt.getHierarchy(),rt.getHierarchy().accessRoot());
     auto end = RoutingTableIterator(&rt.getHierarchy(), nullptr);
+    currentNode.toSon(6);
+    currentNode.toSon(50);
     std::vector<RoutingRecord> filtered;
     int choice, inputMask, octetValue;
     std::string minimum, maximum, inputAdd, confirmation;
-    auto isLeaf = [&](RTNode& node) {
-           return node.getPointers().size() > 0;
-        };
-
-    auto matchWithLifetime = [&](RoutingRecord& record) {
-        return isTimeInRange(record.getLifeTime(), minimum, maximum);
-        };
     auto matchWithAdress = [&](RoutingRecord& record) {
         return doesIPMatch(record.getPrefixAddBits(), inputMask, ipToUint32(inputAdd));
         };
     auto matchWithNextHop = [&](RoutingRecord& record) {
         return record.getNextHopAdd() == inputAdd;
         };
-    while (true) {
+    auto insertToFiltered = [&](RoutingRecord& record) {
+        filtered.push_back(record);
+        };
+    auto insertPointerToFiltered = [&](RoutingRecord* record) {
+        filtered.push_back(*record);
+        };
+    auto matchWithLifetime = [&](RoutingRecord* record) {
+        return isTimeInRange(record->getLifeTime(), minimum, maximum);
+        };
+    auto suckOutPointers = [&](RTNode& node) {
+        Filter::filter(node.getPointers().begin(), node.getPointers().end(), matchWithLifetime, insertPointerToFiltered);
+        };
+    auto isLeaf = [&](RTNode& node) {
+        return node.getPointers().size() > 0;
+        };
+    minimum = "2w";
+    maximum = "4w";
+    Filter::filter(currentNode, end, isLeaf, suckOutPointers);
+    printFiltered(filtered);
+    /*while (true) {
         showMenu();
         std::cin >> choice;
 
@@ -56,14 +70,14 @@ int main() {
             std::cin >> minimum;
             std::cout << "Enter maximum life time (example >> 1w4d3h or 6:25:20): ";
             std::cin >> maximum;
-            filtered = Filter::filter(records.begin(), records.end(), matchWithLifetime);
+            Filter::filter(records.begin(), records.end(), matchWithLifetime, insertToFiltered);
             printFiltered(filtered);
             break;
 
         case 2: 
             std::cout << "Enter a nexthop address (example >> 192.168.1.10): ";
             std::cin >> inputAdd;
-            filtered = Filter::filter(records.begin(), records.end(), matchWithNextHop);
+            Filter::filter(records.begin(), records.end(), matchWithNextHop, insertToFiltered);
             printFiltered(filtered);
             break;
 
@@ -72,7 +86,7 @@ int main() {
             std::cin >> inputAdd;
             std::cout << "Enter max prefix you want to match (1-31): ";
             std::cin >> inputMask;
-            filtered = Filter::filter(records.begin(), records.end(), matchWithAdress);
+            Filter::filter(records.begin(), records.end(), matchWithAdress, insertToFiltered);
             printFiltered(filtered);
             break;
 
@@ -95,13 +109,9 @@ int main() {
         }
 
         if (choice >= 1 && choice <= 3) {
-            std::cout << "Filter applied. Current results: " << records.size() << " records." << '\n';
-            std::cout << "Continue filtering? (y/n): ";
-            std::cin >> confirmation;
-            if (confirmation != "y" && confirmation != "Y") {
-                records = records;
-            }
+            std::cout << "Filter applied. Current results: " << filtered.size() << " records." << '\n';
+            filtered.clear();
         }
-    }
+    }*/
 }
 
