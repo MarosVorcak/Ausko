@@ -16,6 +16,7 @@ void showParts() {
     std::cout << "======Parts======" << "\n";
     std::cout << "1. Part1 (simple vector)" << '\n';
     std::cout << "2. Part2 (explicit hierarchy)" << '\n';
+    std::cout << "3. Exit the program" << '\n';
     std::cout << "Enter your choice: ";
 }
 
@@ -37,10 +38,10 @@ int main() {
     initHeapMonitor();
     std::vector<RoutingRecord> records = parseCSV("RT.csv");
     RoutingTable rt(records);
-    auto currentNode = RoutingTableIterator(&rt.getHierarchy(),rt.getHierarchy().accessRoot());
+    auto currentNode = RoutingTableIterator(&rt.getHierarchy(), rt.getHierarchy().accessRoot());
     auto end = RoutingTableIterator(&rt.getHierarchy(), nullptr);
     std::vector<RoutingRecord> filtered;
-    int choice, inputMask, octetValue,part;
+    int choice, inputMask, octetValue, part;
     std::string minimum, maximum, inputAdd, confirmation;
     auto matchWithLifetimeByReference = [&](RoutingRecord& record) {
         return isTimeInRange(record.getLifeTime(), minimum, maximum);
@@ -230,10 +231,17 @@ int main() {
                 }
             }
             break;
+        case 3:
+            std::cout << "Are you sure you want to exit? (y/n): ";
+            std::cin >> confirmation;
+            if (confirmation == "y" || confirmation == "Y") {
+                std::cout << "Exiting...\n";
+                return 0;
+            }
+            break;
         default:
             std::cout << "Invalid choice. Try again.\n";
         }
     }
-    
-}
 
+}
