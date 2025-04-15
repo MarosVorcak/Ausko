@@ -28,11 +28,23 @@ int main() {
     std::vector<RoutingRecord> filtered;
     int choice, inputMask, octetValue;
     std::string minimum, maximum, inputAdd, confirmation;
-    auto matchWithAdress = [&](RoutingRecord& record) {
+    auto matchWithLifetimeByReference = [&](RoutingRecord& record) {
+        return isTimeInRange(record.getLifeTime(), minimum, maximum);
+        };
+    auto matchWithAdressByReference = [&](RoutingRecord& record) {
         return doesIPMatch(record.getPrefixAddBits(), inputMask, ipToUint32(inputAdd));
         };
-    auto matchWithNextHop = [&](RoutingRecord& record) {
+    auto matchWithNextHopByReference = [&](RoutingRecord& record) {
         return record.getNextHopAdd() == inputAdd;
+        };
+    auto matchWithLifetimeByPointer = [&](RoutingRecord* record) {
+        return isTimeInRange(record->getLifeTime(), minimum, maximum);
+        };
+    auto matchWithAdressByPointer = [&](RoutingRecord* record) {
+        return doesIPMatch(record->getPrefixAddBits(), inputMask, ipToUint32(inputAdd));
+        };
+    auto matchWithNextHopByPointer = [&](RoutingRecord* record) {
+        return record->getNextHopAdd() == inputAdd;
         };
     auto insertToFiltered = [&](RoutingRecord& record) {
         filtered.push_back(record);
@@ -40,20 +52,13 @@ int main() {
     auto insertPointerToFiltered = [&](RoutingRecord* record) {
         filtered.push_back(*record);
         };
-    auto matchWithLifetime = [&](RoutingRecord* record) {
-        return isTimeInRange(record->getLifeTime(), minimum, maximum);
-        };
     auto suckOutPointers = [&](RTNode& node) {
-        Filter::filter(node.getPointers().begin(), node.getPointers().end(), matchWithLifetime, insertPointerToFiltered);
+        Filter::filter(node.getPointers().begin(), node.getPointers().end(), matchWithLifetimeByPointer, insertPointerToFiltered);
         };
     auto isLeaf = [&](RTNode& node) {
         return node.getPointers().size() > 0;
         };
-    minimum = "2w";
-    maximum = "4w";
-    Filter::filter(currentNode, end, isLeaf, suckOutPointers);
-    printFiltered(filtered);
-    /*while (true) {
+    while (true) {
         showMenu();
         std::cin >> choice;
 
@@ -70,14 +75,14 @@ int main() {
             std::cin >> minimum;
             std::cout << "Enter maximum life time (example >> 1w4d3h or 6:25:20): ";
             std::cin >> maximum;
-            Filter::filter(records.begin(), records.end(), matchWithLifetime, insertToFiltered);
+            Filter::filter(records.begin(), records.end(), matchWithLifetimeByReference, insertToFiltered);
             printFiltered(filtered);
             break;
 
         case 2: 
             std::cout << "Enter a nexthop address (example >> 192.168.1.10): ";
             std::cin >> inputAdd;
-            Filter::filter(records.begin(), records.end(), matchWithNextHop, insertToFiltered);
+            Filter::filter(records.begin(), records.end(), matchWithNextHopByReference, insertToFiltered);
             printFiltered(filtered);
             break;
 
@@ -86,7 +91,7 @@ int main() {
             std::cin >> inputAdd;
             std::cout << "Enter max prefix you want to match (1-31): ";
             std::cin >> inputMask;
-            Filter::filter(records.begin(), records.end(), matchWithAdress, insertToFiltered);
+            Filter::filter(records.begin(), records.end(), matchWithAdressByReference, insertToFiltered);
             printFiltered(filtered);
             break;
 
@@ -112,6 +117,6 @@ int main() {
             std::cout << "Filter applied. Current results: " << filtered.size() << " records." << '\n';
             filtered.clear();
         }
-    }*/
+    }
 }
 
