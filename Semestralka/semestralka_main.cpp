@@ -81,13 +81,14 @@ int main() {
         return node.getPointers().size() > 0;
         };
     while (true) {
-        bool stop = false;
+        bool filtering = true;
+        bool navigating = true;
         showParts();
         std::cin >> part;
         switch (part) {
         case 1:
             filtered.clear();
-            while (!stop) {
+            while (filtering) {
                 showMenu();
                 std::cin >> choice;
 
@@ -133,7 +134,7 @@ int main() {
                     std::cout << "Are you sure you want to exit? (y/n): ";
                     std::cin >> confirmation;
                     if (confirmation == "y" || confirmation == "Y") {
-                        stop = true;
+                        filtering = false;
                         std::cout << "Exiting...\n";
                     }
                     break;
@@ -150,7 +151,7 @@ int main() {
             break;
         case 2:
             filtered.clear();
-            while (!stop) {
+            while (navigating) {
                 showMovementOptions();
                 std::cin >> choice;
                 switch (choice) {
@@ -163,14 +164,13 @@ int main() {
                     currentNode.toSon(octetValue);
                     break;
                 case 3:
-                    stop = true;
+                    navigating = false;
                     break;
                 default:
                     std::cout << "Invalid choice. Try again.\n";
                 }
             }
-            stop = false;
-            while (!stop) {
+            while (filtering) {
                 showMenu();
                 std::cin >> choice;
 
@@ -216,7 +216,7 @@ int main() {
                     std::cout << "Are you sure you want to exit? (y/n): ";
                     std::cin >> confirmation;
                     if (confirmation == "y" || confirmation == "Y") {
-                        stop = true;
+                        filtering = false;
                         std::cout << "Exiting...\n";
                     }
                     break;
