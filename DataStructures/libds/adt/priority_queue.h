@@ -264,9 +264,13 @@ namespace ds::adt {
     template<typename P, typename T, typename SequenceType>
     typename SequenceType::BlockType* UnsortedSequencePriorityQueue<P, T, SequenceType>::findHighestPriorityBlock()
     {
-        // TODO 09
-        // po implementacii vymazte vyhodenie vynimky!
-        throw std::runtime_error("Not implemented yet");
+        typename SequenceType::BlockType* best = this->getSequence()->accessFirst();
+        this->getSequence()->processAllBlocksForward([&](typename SequenceType::BlockType* block) {
+                if (block->data_.priority_ < best->data_.priority_) {
+                    best = block;
+                }
+            });
+        return best;
     }
 
     template<typename P, typename T, typename SequenceType>
@@ -299,6 +303,16 @@ namespace ds::adt {
     template<typename P, typename T>
     T UnsortedImplicitSequencePriorityQueue<P, T>::pop()
     {
+        /*if (this->isEmpty()) {
+            throw std::out_of_range("Queue is empty");
+        }
+        auto* block = this->findHighestPriorityBlock();
+        auto* lastBlock = this->getSqeuence()->accessLast();
+        T data = block->data_.data_; 
+        std::swap(block->data_,lastBlock->data_);
+        this->getSequence()->removeLast();
+        return data;*/
+
         // TODO 09
         // po implementacii vymazte vyhodenie vynimky!
         throw std::runtime_error("Not implemented yet");
@@ -460,9 +474,16 @@ namespace ds::adt {
     template<typename P, typename T>
     void BinaryHeap<P, T>::push(P priority, T data)
     {
-        // TODO 09
-        // po implementacii vymazte vyhodenie vynimky!
-        throw std::runtime_error("Not implemented yet");
+        PriorityQueueItem<P, T>& item = this->getHierarchy()->insertLastLeaf().data_;
+        item.priority_ = priority;
+        item.data_ = data;
+        auto* current = this->getHierarchy()->accessLastLeaf();
+        auto* parent = this->getHierarchy()->accessParent(*current);
+        while (parent != null && current->data_.priority_ < parent->data_.priority_) {
+            std::swap(current->data_, parent->data_);
+            current = parent;
+            parent = this->getHierarchy()->accessParent(*current);
+        }
     }
 
     template<typename P, typename T>
