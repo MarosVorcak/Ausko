@@ -34,19 +34,19 @@ public:
 
 class RoutingTableIterator : public ds::amt::MultiWayExplicitHierarchy<RTNode>::PreOrderHierarchyIterator {
     public:
-        RoutingTableIterator(ds::amt::MultiWayExplicitHierarchy<RTNode>* kokotina, ds::amt::MultiWayExplicitHierarchyBlock<RTNode>* position);
+        RoutingTableIterator(ds::amt::MultiWayExplicitHierarchy<RTNode>* hierarchy, ds::amt::MultiWayExplicitHierarchyBlock<RTNode>* position);
         void toParent();
         void toSon(int nodeValue);
 };
 
-RoutingTableIterator::RoutingTableIterator(ds::amt::MultiWayExplicitHierarchy<RTNode>* kokotina, ds::amt::MultiWayExplicitHierarchyBlock<RTNode>* position):
-    ds::amt::MultiWayExplicitHierarchy<RTNode>::PreOrderHierarchyIterator(kokotina, position) {
+RoutingTableIterator::RoutingTableIterator(ds::amt::MultiWayExplicitHierarchy<RTNode>* hierarchy, ds::amt::MultiWayExplicitHierarchyBlock<RTNode>* position):
+    ds::amt::MultiWayExplicitHierarchy<RTNode>::PreOrderHierarchyIterator(hierarchy, position) {
 
 }
 
 void RoutingTableIterator::toParent() {
     if (this->currentPosition_->currentNode_ == this->hierarchy_->accessRoot()) {
-        std::cout << "" << "\n";
+        std::cout << "You are root" << "\n";
         return;
     }
     auto parent = this->hierarchy_->accessParent(*this->currentPosition_->currentNode_);

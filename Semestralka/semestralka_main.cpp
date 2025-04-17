@@ -7,8 +7,7 @@ void showMenu() {
     std::cout << "1. Filter by lifetime" << '\n';
     std::cout << "2. Filter by nexthop address" << '\n';
     std::cout << "3. Filter by matching with prefix address" << '\n';
-    std::cout << "4. Print filtered data structure" << '\n';
-    std::cout << "5. Exit the part" << '\n';
+    std::cout << "4. Exit the part" << '\n';
     std::cout << "Enter your choice: ";
 }
 
@@ -124,13 +123,7 @@ int main() {
                     Filter::filter(records.begin(), records.end(), matchWithAdressByReference, insertToFiltered);
                     printFiltered(filtered);
                     break;
-
                 case 4:
-                    std::cout << "Current filtered results (" << filtered.size() << " records):" << '\n';
-                    printFiltered(filtered);
-                    break;
-
-                case 5:
                     std::cout << "Are you sure you want to exit? (y/n): ";
                     std::cin >> confirmation;
                     if (confirmation == "y" || confirmation == "Y") {
@@ -206,13 +199,7 @@ int main() {
                     Filter::filter(currentNode, end, isLeaf, processRecordsWithAddress);
                     printFiltered(filtered);
                     break;
-
                 case 4:
-                    std::cout << "Current filtered results (" << filtered.size() << " records):" << '\n';
-                    printFiltered(filtered);
-                    break;
-
-                case 5:
                     std::cout << "Are you sure you want to exit? (y/n): ";
                     std::cin >> confirmation;
                     if (confirmation == "y" || confirmation == "Y") {
