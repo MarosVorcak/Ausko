@@ -59,7 +59,7 @@ void RoutingTableIterator::toSon(int nodeValue) {
         return;
     }
     auto sons = *this->currentPosition_->currentNode_->sons_;
-    for (decltype(auto) son : sons) {
+    for (auto& son : sons) {
         if (son->data_.getOctetValue() == nodeValue) {
             this->currentPosition_->currentNode_ = son;
             return;
@@ -142,11 +142,11 @@ void RoutingTable::addIP(const std::string& ip, const RoutingRecord* pointerToRe
         octets.push_back(std::stoi(octet));
     }
 
-    decltype(auto) currentNode = this->hierarchy.accessRoot();
+    auto currentNode = this->hierarchy.accessRoot();
     for (int currentOctet : octets) {
         bool found = false;
 
-        for (decltype(auto) son : *currentNode->sons_) {
+        for (auto& son : *currentNode->sons_) {
             if (son->data_.getOctetValue() == currentOctet) {
                 currentNode = son;
                 found = true;
@@ -156,7 +156,7 @@ void RoutingTable::addIP(const std::string& ip, const RoutingRecord* pointerToRe
 
         if (!found) {
             size_t index = currentNode->sons_->size();
-            decltype(auto) newNode = this->hierarchy.emplaceSon(*currentNode, index);
+            auto& newNode = this->hierarchy.emplaceSon(*currentNode, index);
             newNode.data_ = RTNode(currentOctet);
             currentNode = &newNode;
         }
