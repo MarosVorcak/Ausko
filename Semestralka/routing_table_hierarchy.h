@@ -1,5 +1,6 @@
 #pragma once
 #include <libds/amt/explicit_hierarchy.h>
+#include <libds/adt/list.h>
 #include "csv_parser.h"
 #include <vector>
 #include <string>
@@ -8,14 +9,14 @@
 class RTNode {
 private:
     int octetValue;
-    std::vector<RoutingRecord*> pointersToRecords;
+    ds::adt::SinglyLinkedList<RoutingRecord*> listToPointers;
 public:
     RTNode();
     RTNode(int octetValue);
     void setOctetValue(int octetValue);
     int getOctetValue();
     void printRecords();
-    std::vector< RoutingRecord*>& getPointers();
+    ds::adt::SinglyLinkedList<RoutingRecord*>& getPointers();
     void addPointer(RoutingRecord* pointer);
     bool operator==(const RTNode& other) const;
     RTNode& operator=(const RTNode& other);
@@ -82,25 +83,24 @@ void RTNode::setOctetValue(int octetValue) {
     this->octetValue = octetValue;
 }
 
-std::vector<RoutingRecord*>& RTNode::getPointers() {
-    return this->pointersToRecords;
+ds::adt::SinglyLinkedList<RoutingRecord*>& RTNode::getPointers() {
+    return this->listToPointers;
 }
 
 void RTNode::printRecords() {
-    if (this->pointersToRecords.size() > 0) {
-        for (const RoutingRecord* pointer : pointersToRecords) {
+    if (this->listToPointers.size() > 0) {
+        for (const RoutingRecord* pointer : listToPointers) {
             pointer->print();
         }
     };
 }
-
 
 int RTNode::getOctetValue() {
     return this->octetValue;
 }
 
 void RTNode::addPointer(RoutingRecord* pointer) {
-    this->pointersToRecords.push_back(pointer);
+    this->listToPointers.insertLast(pointer);
 }
 
 bool RTNode::operator==(const RTNode& other) const {
@@ -111,10 +111,8 @@ RTNode& RTNode::operator=(const RTNode& other) {
     if (this == &other) {
         return *this;
     }
-    this->octetValue = 0;
-    this->pointersToRecords.clear();
+    this->listToPointers.clear();
     this->octetValue = other.octetValue;
-    this->pointersToRecords = other.pointersToRecords;
     return *this;
 }
 

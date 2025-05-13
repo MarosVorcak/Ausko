@@ -278,5 +278,6 @@ namespace ds::adt {
     SequenceType* GeneralList<T, SequenceType>::getSequence() const
     {
         return dynamic_cast<SequenceType*>(this->memoryStructure_);
+
     }
 }
