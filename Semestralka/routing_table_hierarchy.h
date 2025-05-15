@@ -22,30 +22,30 @@ public:
     RTNode& operator=(const RTNode& other);
 };
 
-class RoutingTable {
+class RoutingHierarchy {
 private:
     ds::amt::MultiWayExplicitHierarchy<RTNode> hierarchy;
 public:
-    RoutingTable(const std::vector<RoutingRecord>& loadedRecrods);
+    RoutingHierarchy(const std::vector<RoutingRecord>& loadedRecrods);
     void initHierarchy(const std::vector<RoutingRecord>& loadedRecords);
     void addIP(const std::string& ip, const RoutingRecord* pointerToRecord);
     ds::amt::MultiWayExplicitHierarchy<RTNode>& getHierarchy();
     void printSize();
 };
 
-class RoutingTableIterator : public ds::amt::MultiWayExplicitHierarchy<RTNode>::PreOrderHierarchyIterator {
+class RoutingHierarchyIterator : public ds::amt::MultiWayExplicitHierarchy<RTNode>::PreOrderHierarchyIterator {
     public:
-        RoutingTableIterator(ds::amt::MultiWayExplicitHierarchy<RTNode>* hierarchy, ds::amt::MultiWayExplicitHierarchyBlock<RTNode>* position);
+        RoutingHierarchyIterator(ds::amt::MultiWayExplicitHierarchy<RTNode>* hierarchy, ds::amt::MultiWayExplicitHierarchyBlock<RTNode>* position);
         void toParent();
         void toSon(int nodeValue);
 };
 
-RoutingTableIterator::RoutingTableIterator(ds::amt::MultiWayExplicitHierarchy<RTNode>* hierarchy, ds::amt::MultiWayExplicitHierarchyBlock<RTNode>* position):
+RoutingHierarchyIterator::RoutingHierarchyIterator(ds::amt::MultiWayExplicitHierarchy<RTNode>* hierarchy, ds::amt::MultiWayExplicitHierarchyBlock<RTNode>* position):
     ds::amt::MultiWayExplicitHierarchy<RTNode>::PreOrderHierarchyIterator(hierarchy, position) {
 
 }
 
-void RoutingTableIterator::toParent() {
+void RoutingHierarchyIterator::toParent() {
     if (this->currentPosition_->currentNode_ == this->hierarchy_->accessRoot()) {
         std::cout << "You are root" << "\n";
         return;
@@ -54,7 +54,7 @@ void RoutingTableIterator::toParent() {
     this->currentPosition_->currentNode_ = parent;
 }
 
-void RoutingTableIterator::toSon(int nodeValue) {
+void RoutingHierarchyIterator::toSon(int nodeValue) {
     if (this->hierarchy_->isLeaf(*this->currentPosition_->currentNode_)) {
         std::cout << "There is no sons" << "\n";
         return;
@@ -100,7 +100,7 @@ int RTNode::getOctetValue() {
 }
 
 void RTNode::addPointer(RoutingRecord* pointer) {
-    this->listToPointers.insertLast(pointer);
+    this->listToPointers.insertFirst(pointer);
 }
 
 bool RTNode::operator==(const RTNode& other) const {
@@ -116,22 +116,22 @@ RTNode& RTNode::operator=(const RTNode& other) {
     return *this;
 }
 
-RoutingTable::RoutingTable(const std::vector<RoutingRecord>& loadedRecords) {
+RoutingHierarchy::RoutingHierarchy(const std::vector<RoutingRecord>& loadedRecords) {
     this->initHierarchy(loadedRecords);
 }
 
-void RoutingTable::initHierarchy(const std::vector<RoutingRecord>& loadedRecords) {
+void RoutingHierarchy::initHierarchy(const std::vector<RoutingRecord>& loadedRecords) {
     this->hierarchy.emplaceRoot().data_ = RTNode();
     for (const RoutingRecord& record : loadedRecords) {
         this->addIP(record.getPrefixAdd(), &record);
     }
 }
 
-ds::amt::MultiWayExplicitHierarchy<RTNode>& RoutingTable::getHierarchy() {
+ds::amt::MultiWayExplicitHierarchy<RTNode>& RoutingHierarchy::getHierarchy() {
     return this->hierarchy;
 }
 
-void RoutingTable::addIP(const std::string& ip, const RoutingRecord* pointerToRecord) {
+void RoutingHierarchy::addIP(const std::string& ip, const RoutingRecord* pointerToRecord) {
     std::stringstream ss(ip);
     std::string octet;
     std::vector<int> octets;
@@ -162,6 +162,6 @@ void RoutingTable::addIP(const std::string& ip, const RoutingRecord* pointerToRe
     currentNode->data_.addPointer(const_cast<RoutingRecord*>(pointerToRecord));
 }
 
-void RoutingTable::printSize() {
+void RoutingHierarchy::printSize() {
     std::cout << "Current size is: " << this->hierarchy.size() << "\n";
 }

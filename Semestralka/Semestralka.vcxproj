@@ -139,6 +139,7 @@
     <ClInclude Include="ip_tools.h" />
     <ClInclude Include="routing_record.h" />
     <ClInclude Include="routing_table_hierarchy.h" />
+    <ClInclude Include="routing_table_table.h" />
     <ClInclude Include="time_tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -38,5 +38,8 @@
     <ClInclude Include="routing_table_hierarchy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="routing_table_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

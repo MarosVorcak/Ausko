@@ -2,7 +2,7 @@
 #include "filter_tools.h"
 #include "time_tools.h"
 #include "routing_table_hierarchy.h"
-#include <libds/adt/list.h>
+#include "routing_table_table.h"
 void showMenu() {
     std::cout << "======Menu======" << '\n';
     std::cout << "1. Filter by lifetime" << '\n';
@@ -16,7 +16,8 @@ void showParts() {
     std::cout << "======Parts======" << "\n";
     std::cout << "1. Part1 (simple vector)" << '\n';
     std::cout << "2. Part2 (explicit hierarchy)" << '\n';
-    std::cout << "3. Exit the program" << '\n';
+    std::cout << "3. Part3 (table)" << '\n';
+    std::cout << "4. Exit the program" << '\n';
     std::cout << "Enter your choice: ";
 }
 
@@ -37,9 +38,11 @@ void printFiltered(std::vector<RoutingRecord>& filteredVector) {
 int main() {
     initHeapMonitor();
     std::vector<RoutingRecord> records = parseCSV("RT.csv");
-    RoutingTable rt(records);
-    auto currentNode = RoutingTableIterator(&rt.getHierarchy(), rt.getHierarchy().accessRoot());
-    auto end = RoutingTableIterator(&rt.getHierarchy(), nullptr);
+    RoutingHierarchy rt(records);
+    RoutingTable table(records);
+    listType* list = nullptr;
+    auto currentNode = RoutingHierarchyIterator(&rt.getHierarchy(), rt.getHierarchy().accessRoot());
+    auto end = RoutingHierarchyIterator(&rt.getHierarchy(), nullptr);
     std::vector<RoutingRecord> filtered;
     int choice, inputMask, octetValue, part;
     std::string minimum, maximum, inputAdd, confirmation;
@@ -80,7 +83,6 @@ int main() {
     auto isLeaf = [&](RTNode& node) {  
        return node.getPointers().size() > 0;  
     };  
-
     while (true) {  
        bool filtering = true;  
        bool navigating = true;  
@@ -219,15 +221,40 @@ int main() {
                    filtered.clear();  
                }  
            }  
-           break;  
-       case 3:  
+           break;
+       case 3:
+           while (filtering) {
+               std::cout << "Enter next-hop address: ";
+               std::cin >> inputAdd;
+               if (table.getTable().tryFind(inputAdd,list)) {
+                   auto foundList = *list;
+                   auto it = foundList->begin();
+                   while (it != foundList->end()) {
+                       auto record = *it;
+                       record->print();
+                       ++it;
+                   }
+                   std::cout << "Found " << foundList->size() << " records with this key" << "\n";
+               }
+               else {
+                   std::cout << "There are no records with " << inputAdd << " as key" << "\n";
+               }
+               std::cout << "Do you want to find other records (y/n): ";
+               std::cin >> confirmation;
+               if (confirmation == "y" || confirmation == "Y") {
+                   continue;
+               }
+               filtering = false;
+           }
+           break;
+       case 4:  
            std::cout << "Are you sure you want to exit? (y/n): ";  
            std::cin >> confirmation;  
            if (confirmation == "y" || confirmation == "Y") {  
                std::cout << "Exiting...\n";  
                return 0;  
            }  
-           break;  
+           break;
        default:  
            std::cout << "Invalid choice. Try again.\n";  
        }  
