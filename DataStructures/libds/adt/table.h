@@ -929,22 +929,38 @@ namespace ds::adt {
 
 	template<typename K, typename T>
 	void Treap<K, T>::removeNode(BSTNodeType* node) {
-		// TODO 11
-		// po implementacii vymazte vyhodenie vynimky!
-		throw std::runtime_error("Not implemented yet");
+		node->data_.priority_ = rng_.min();
+		while (this->getHierarchy()->degree(*node) == 2) {
+			BSTNodeType* leftSon = this->getHierarchy()->accessLeftSon(*node);
+			BSTNodeType* rightSon = this->getHierarchy()->accessRightSon(*node);
+			if (leftSon->data_.priority_ < rightSon->data_.priority_) {
+				this->rotateRight(leftSon);
+			}
+			else {
+				this->rotateLeft(rightSon);
+			}
+		}
+		GeneralBinarySearchTree<K, T, TreapItem<K, T>>::removeNode(node);
 	}
 
 	template<typename K, typename T>
 	void Treap<K, T>::balanceTree(BSTNodeType* node) {
-		// TODO 11
-		// po implementacii vymazte vyhodenie vynimky!
-		throw std::runtime_error("Not implemented yet");
+		node->data_.priority_ = this->rng_();
+		BSTNodeType* parent = this->getHierarchy()->accessParent(*node);
+		while (parent != nullptr && parent->data_.priority_ > node->data_.priority_) {
+			if (this->getHierarchy()->accessLeftSon(*parent) == node) {
+				this->rotateRight(node);
+			}
+			else {
+				this->rotateLeft(node);
+			}
+			parent = this->getHierarchy()->accessParent(*node);
+		}
+
 	}
 
 	template<typename K, typename T>
 	bool Treap<K, T>::equals(const ADT& other) {
-		// TODO 11
-		// po implementacii vymazte vyhodenie vynimky!
-		throw std::runtime_error("Not implemented yet");
+		return Table<K, T>::areEqual(*this, other);
 	}
 }

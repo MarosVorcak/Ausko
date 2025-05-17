@@ -4,7 +4,7 @@
 #include <libds/heap_monitor.h>
 #include "routing_record.h"
 using listType = ds::adt::SinglyLinkedList<const RoutingRecord*>*;
-using tableType = ds::adt::BinarySearchTree<std::string, listType>;
+using tableType = ds::adt::Treap<std::string, listType>;
 class RoutingTable {	
 private:
 	tableType table;

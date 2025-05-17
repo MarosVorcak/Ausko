@@ -1,8 +1,9 @@
 #include <iostream>
 #include "filter_tools.h"
-#include "time_tools.h"
 #include "routing_table_hierarchy.h"
 #include "routing_table_table.h"
+#include "sorting_tool.h"
+
 void showMenu() {
     std::cout << "======Menu======" << '\n';
     std::cout << "1. Filter by lifetime" << '\n';
@@ -13,10 +14,10 @@ void showMenu() {
 }
 
 void showParts() {
-    std::cout << "======Parts======" << "\n";
-    std::cout << "1. Part1 (simple vector)" << '\n';
-    std::cout << "2. Part2 (explicit hierarchy)" << '\n';
-    std::cout << "3. Part3 (table)" << '\n';
+    std::cout << "======Main menu======" << "\n";
+    std::cout << "1. Part1 (sequence filtering)" << '\n';
+    std::cout << "2. Part2 (explicit hierarchy filtering)" << '\n';
+    std::cout << "3. Part3 (table lookup)" << '\n';
     std::cout << "4. Exit the program" << '\n';
     std::cout << "Enter your choice: ";
 }
@@ -27,6 +28,40 @@ void showMovementOptions() {
     std::cout << "2. To son" << "\n";
     std::cout << "3. Start filtering" << "\n";
     std::cout << "Enter your choice: ";
+}
+
+void showSortingOptions(std::vector<RoutingRecord>& source) {
+    std::string confirmation;
+    int sortingChoice;
+    auto lifetimeComparator = [](RoutingRecord& record1, RoutingRecord& record2) {
+        return record1.getLifeTimeSecs() < record2.getLifeTimeSecs();
+        };
+    auto prefixComparator = [](RoutingRecord& record1, RoutingRecord& record2) {
+        return compareIPs(record1.getPrefixAddBits(), record2.getPrefixAddBits(), record1.getPrefixMask(), record2.getPrefixMask());
+        };
+    std::cout << "Do you want to sort filtered records (y/n): ";
+    std::cin >> confirmation;
+    if (tolower(confirmation[0]) != 'y') {
+        return;
+    }
+    while (true) {
+        std::cout << "Sorting options" << "\n";
+        std::cout << "1. Sort by lifetime" << "\n";
+        std::cout << "2. Sort by prefix" << "\n";
+        std::cout << "Enter your choice: ";
+        std::cin >> sortingChoice;
+        switch (sortingChoice) {
+        case 1:
+            Sorter::sort(source, lifetimeComparator);
+            return;
+        case 2:
+            Sorter::sort(source, prefixComparator);
+            return;
+        default:
+            std::cout << "Invalid option. Please select a valid option";
+            continue;
+        }
+    }
 }
 
 void printFiltered(std::vector<RoutingRecord>& filteredVector) {
@@ -47,7 +82,7 @@ int main() {
     int choice, inputMask, octetValue, part;
     std::string minimum, maximum, inputAdd, confirmation;
     auto matchWithLifetimeByReference = [&](RoutingRecord& record) {  
-       return isTimeInRange(record.getLifeTime(), minimum, maximum);  
+       return isTimeInRange(record.getLifeTimeSecs(), minimum, maximum);  
     };  
     auto matchWithAdressByReference = [&](RoutingRecord& record) {  
        return doesIPMatch(record.getPrefixAddBits(), inputMask, ipToUint32(inputAdd));  
@@ -56,7 +91,7 @@ int main() {
        return record.getNextHopAdd() == inputAdd;  
     };  
     auto matchWithLifetimeByPointer = [&](RoutingRecord* record) {  
-       return isTimeInRange(record->getLifeTime(), minimum, maximum);  
+       return isTimeInRange(record->getLifeTimeSecs(), minimum, maximum);  
     };  
     auto matchWithAdressByPointer = [&](RoutingRecord* record) {  
        return doesIPMatch(record->getPrefixAddBits(), inputMask, ipToUint32(inputAdd));  
@@ -82,7 +117,9 @@ int main() {
 
     auto isLeaf = [&](RTNode& node) {  
        return node.getPointers().size() > 0;  
-    };  
+    };
+
+
     while (true) {  
        bool filtering = true;  
        bool navigating = true;  
@@ -109,6 +146,7 @@ int main() {
                    std::cout << "Enter maximum life time (example >> 1w4d3h or 6:25:20): ";  
                    std::cin >> maximum;  
                    Filter::filter(records.begin(), records.end(), matchWithLifetimeByReference, insertToFiltered);  
+                   showSortingOptions(filtered);
                    printFiltered(filtered);  
                    break;  
 
@@ -116,6 +154,7 @@ int main() {
                    std::cout << "Enter a nexthop address (example >> 192.168.1.10): ";  
                    std::cin >> inputAdd;  
                    Filter::filter(records.begin(), records.end(), matchWithNextHopByReference, insertToFiltered);  
+                   showSortingOptions(filtered);
                    printFiltered(filtered);  
                    break;  
 
@@ -124,13 +163,14 @@ int main() {
                    std::cin >> inputAdd;  
                    std::cout << "Enter max prefix you want to match (1-31): ";  
                    std::cin >> inputMask;  
-                   Filter::filter(records.begin(), records.end(), matchWithAdressByReference, insertToFiltered);  
+                   Filter::filter(records.begin(), records.end(), matchWithAdressByReference, insertToFiltered);
+                   showSortingOptions(filtered);
                    printFiltered(filtered);  
                    break;  
                case 4:  
                    std::cout << "Are you sure you want to exit? (y/n): ";  
                    std::cin >> confirmation;  
-                   if (confirmation == "y" || confirmation == "Y") {  
+                   if (tolower(confirmation[0]) == 'y') {
                        filtering = false;  
                        std::cout << "Exiting...\n";  
                    }  
@@ -146,7 +186,8 @@ int main() {
                }  
            }  
            break;  
-       case 2:  
+       case 2:
+           currentNode = RoutingHierarchyIterator(&rt.getHierarchy(), rt.getHierarchy().accessRoot());
            filtered.clear();  
            while (navigating) {  
                showMovementOptions();  
@@ -185,13 +226,15 @@ int main() {
                    std::cout << "Enter maximum life time (example >> 1w4d3h or 6:25:20): ";  
                    std::cin >> maximum;  
                    Filter::filter(currentNode, end, isLeaf, processRecordsWithLifetime);  
+                   showSortingOptions(filtered);
                    printFiltered(filtered);  
                    break;  
 
                case 2:  
                    std::cout << "Enter a nexthop address (example >> 192.168.1.10): ";  
                    std::cin >> inputAdd;  
-                   Filter::filter(currentNode, end, isLeaf, processRecordsWithNextHop);  
+                   Filter::filter(currentNode, end, isLeaf, processRecordsWithNextHop);
+                   showSortingOptions(filtered);
                    printFiltered(filtered);  
                    break;  
 
@@ -200,13 +243,14 @@ int main() {
                    std::cin >> inputAdd;  
                    std::cout << "Enter max prefix you want to match (1-31): ";  
                    std::cin >> inputMask;  
-                   Filter::filter(currentNode, end, isLeaf, processRecordsWithAddress);  
+                   Filter::filter(currentNode, end, isLeaf, processRecordsWithAddress);
+                   showSortingOptions(filtered);
                    printFiltered(filtered);  
                    break;  
                case 4:  
                    std::cout << "Are you sure you want to exit? (y/n): ";  
                    std::cin >> confirmation;  
-                   if (confirmation == "y" || confirmation == "Y") {  
+                   if (tolower(confirmation[0]) == 'y') {
                        filtering = false;  
                        std::cout << "Exiting...\n";  
                    }  
@@ -241,7 +285,7 @@ int main() {
                }
                std::cout << "Do you want to find other records (y/n): ";
                std::cin >> confirmation;
-               if (confirmation == "y" || confirmation == "Y") {
+               if (tolower(confirmation[0]) != 'y') {
                    continue;
                }
                filtering = false;
@@ -250,7 +294,7 @@ int main() {
        case 4:  
            std::cout << "Are you sure you want to exit? (y/n): ";  
            std::cin >> confirmation;  
-           if (confirmation == "y" || confirmation == "Y") {  
+           if (tolower(confirmation[0]) != 'y') {
                std::cout << "Exiting...\n";  
                return 0;  
            }  

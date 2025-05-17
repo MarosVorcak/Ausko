@@ -29,8 +29,7 @@ int convertToSecs(const std::string& timeStr) {
 	return result;
 }
 
-bool isTimeInRange(const std::string& timeStr, const std::string& startTime, const std::string& endTime) {
-	int time = convertToSecs(timeStr);
+bool isTimeInRange(const int time, const std::string& startTime, const std::string& endTime) {
 	int start = convertToSecs(startTime);
 	int end = convertToSecs(endTime);
 	return time >= start && time <= end;

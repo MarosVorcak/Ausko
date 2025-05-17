@@ -31,3 +31,10 @@ bool doesIPMatch(uint32_t prefixIp, int prefixMask, uint32_t comparedIp) {
     return (prefixIp & mask) == (comparedIp & mask);
 }
 
+bool compareIPs(uint32_t firstIP, uint32_t secondIp, int firstMask, int secondMask) {
+    if (firstIP == secondIp) {
+        return firstMask < secondMask;
+    }
+    return firstIP < secondIp;
+}
+

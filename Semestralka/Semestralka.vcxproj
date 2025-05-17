@@ -140,7 +140,11 @@
     <ClInclude Include="routing_record.h" />
     <ClInclude Include="routing_table_hierarchy.h" />
     <ClInclude Include="routing_table_table.h" />
+    <ClInclude Include="sorting_tool.h" />
     <ClInclude Include="time_tools.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RT.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

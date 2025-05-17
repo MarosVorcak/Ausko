@@ -1,6 +1,7 @@
 #pragma once
 #include <libds/amt/explicit_hierarchy.h>
 #include <libds/adt/list.h>
+#include <libds/heap_monitor.h>
 #include "csv_parser.h"
 #include <vector>
 #include <string>

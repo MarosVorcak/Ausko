@@ -3,10 +3,12 @@
 #include <iostream>
 #include <cstdint> 
 #include "ip_tools.h" 
+#include "time_tools.h"
 
 class RoutingRecord {
 private:
     std::string lifeTime;
+    int lifeTimeSecs;
     std::string prefixAdd;
     std::uint32_t prefixAddBits;
     int prefixMask;
@@ -15,6 +17,7 @@ private:
 public:
     RoutingRecord() {
         this->lifeTime = "";
+        this->lifeTimeSecs = 0;
         this->prefixAdd = "";
         this->prefixAddBits = 0;
         this->prefixMask = 0;
@@ -23,6 +26,7 @@ public:
 
     RoutingRecord(std::string& lifeTime, std::string& prefixAdd, int prefixMask, std::string& nextHopAdd) {
         this->lifeTime = lifeTime;
+        this->lifeTimeSecs = convertToSecs(lifeTime);
         this->prefixAdd = prefixAdd;
 		this->prefixAddBits = ipToUint32(prefixAdd);
         this->prefixMask = prefixMask;
@@ -41,12 +45,20 @@ public:
         return this->prefixAddBits;
     }
 
-    int& getPrefixMask() {
+    int getPrefixMask() {
         return this->prefixMask;
     }
 
     std::string& getNextHopAdd() {
         return this->nextHopAdd;
+    }
+
+    int getLifeTimeSecs() {
+        return this->lifeTimeSecs;
+    }
+
+    const int getLifeTimeSecs() const {
+        return this->lifeTimeSecs;
     }
 
     const std::string& getLifeTime() const {
